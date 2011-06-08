@@ -1,7 +1,7 @@
 
 -- minutes seconds to degrees
-DROP FUNCTION IF EXISTS minsec2deg(REAL, REAL, REAL);
-CREATE FUNCTION minsec2deg(deg REAL, min REAL, sec REAL) RETURNS REAL 
+DROP FUNCTION IF EXISTS minsec2deg(FLOAT8, FLOAT8, FLOAT8);
+CREATE FUNCTION minsec2deg(deg FLOAT8, min FLOAT8, sec FLOAT8) RETURNS FLOAT8 
 AS $$
   BEGIN
     RETURN deg + min / 60.0 + sec / 3600;
@@ -9,8 +9,8 @@ AS $$
 $$ LANGUAGE plpgsql;
   
 -- degrees to radians
-DROP FUNCTION IF EXISTS deg2rad(REAL);
-CREATE FUNCTION deg2rad(REAL) RETURNS REAL 
+DROP FUNCTION IF EXISTS deg2rad(FLOAT8);
+CREATE FUNCTION deg2rad(FLOAT8) RETURNS FLOAT8 
 AS $$
   BEGIN
     RETURN $1 * 180.0 / pi();
@@ -18,8 +18,8 @@ AS $$
 $$ LANGUAGE plpgsql;
 
 -- radians to degrees
-DROP FUNCTION IF EXISTS rad2deg(REAL);
-CREATE FUNCTION rad2deg(REAL) RETURNS REAL 
+DROP FUNCTION IF EXISTS rad2deg(FLOAT8);
+CREATE FUNCTION rad2deg(FLOAT8) RETURNS FLOAT8 
 AS $$
   BEGIN
     RETURN $1 * pi() / 180.0;
@@ -27,19 +27,19 @@ AS $$
 $$ LANGUAGE plpgsql;
 
 -- great circle distance
-DROP FUNCTION IF EXISTS gcdistance(REAL, REAL, REAL, REAL);
-CREATE FUNCTION gcdistance(lat1 REAL, lon1 REAL, lat2 REAL, lon2 REAL) RETURNS REAL
+DROP FUNCTION IF EXISTS gcdistance(FLOAT8, FLOAT8, FLOAT8, FLOAT8);
+CREATE FUNCTION gcdistance(lat1 FLOAT8, lon1 FLOAT8, lat2 FLOAT8, lon2 FLOAT8) RETURNS FLOAT8
 AS $$
   DECLARE
-    earth_radius_km CONSTANT REAL := 6371.01;
-    earth_radius_mi CONSTANT REAL := 3958.76;
-    earth_radius_nm CONSTANT REAL := 3440.07;
+    earth_radius_km CONSTANT FLOAT8 := 6371.01;
+    earth_radius_mi CONSTANT FLOAT8 := 3958.76;
+    earth_radius_nm CONSTANT FLOAT8 := 3440.07;
     -- Define R to get distance in units above                                                                                                                                     
-    R CONSTANT REAL := earth_radius_km;
-    dlon REAL := lon2 - lon1;
-    dlat REAL := lat2 - lat1;
-    a REAL := pow(sin(dlat/2.0),2.0) + cos(lat1) * cos(lat2) * pow(sin(dlon/2.0),2.0);
-    c REAL := 2 * asin(least(1.0::REAL,sqrt(a)));
+    R CONSTANT FLOAT8 := earth_radius_km;
+    dlon FLOAT8 := lon2 - lon1;
+    dlat FLOAT8 := lat2 - lat1;
+    a FLOAT8 := pow(sin(dlat/2.0),2.0) + cos(lat1) * cos(lat2) * pow(sin(dlon/2.0),2.0);
+    c FLOAT8 := 2 * asin(least(1.0::FLOAT8,sqrt(a)));
   BEGIN
     RETURN R * c;
   END;
